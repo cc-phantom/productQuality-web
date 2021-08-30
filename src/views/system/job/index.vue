@@ -61,7 +61,7 @@ export default {
   components: { eHeader, eForm, crudOperation, pagination, udOperation },
   cruds() {
     return CRUD({
-      title: '岗位',
+      title: '产品',
       url: 'api/job',
       sort: ['jobSort,asc', 'id,desc'],
       crudMethod: { ...crudJob }
@@ -82,7 +82,7 @@ export default {
   methods: {
     // 改变状态
     changeEnabled(data, val) {
-      this.$confirm('此操作将 "' + this.dict.label.job_status[val] + '" ' + data.name + '岗位, 是否继续？', '提示', {
+      this.$confirm('此操作将 "' + this.dict.label.job_status[val] + '" ' + data.name + '产品, 是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
