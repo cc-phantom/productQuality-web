@@ -5,7 +5,7 @@
     :before-close="crud.cancelCU"
     :visible="crud.status.cu > 0"
     :title="crud.status.title"
-    width="600px"
+    width="500px"
   >
     <el-form
       ref="form"
@@ -26,70 +26,76 @@
         label="有断言且运行成功的用例数"
         prop="successNumWithAssert"
       >
-        <el-input
+        <el-input-number
           v-model.number="form.successNumWithAssert"
           :disabled="inputDis"
           placeholder="请输入有断言且运行成功的用例数"
           controls-position="right"
           type="number"
+          :min="0"
         />
       </el-form-item>
       <el-form-item
         label="没有断言但运行成功的用例数"
         prop="successNumWithoutAssert"
       >
-        <el-input
+        <el-input-number
           v-model.number="form.successNumWithoutAssert"
           :disabled="inputDis"
           placeholder="请输入没有断言但运行成功的用例数"
           controls-position="right"
           type="number"
+          :min="0"
         />
       </el-form-item>
       <el-form-item
         label="比对断言运行失败的用例数"
         prop="failNumWithAssert"
       >
-        <el-input
+        <el-input-number
           v-model.number="form.failNumWithAssert"
           :disabled="inputDis"
           placeholder="请输入比对断言运行失败的用例数"
           controls-position="right"
           type="number"
+          :min="0"
         />
       </el-form-item>
       <el-form-item
         label="异常失败的用例数"
         prop="failNumWithException"
       >
-        <el-input
+        <el-input-number
           v-model.number="form.failNumWithException"
           controls-position="right"
           placeholder="请输入异常失败的用例数"
           type="number"
+          :min="0"
         />
       </el-form-item>
       <el-form-item
         label="单元测试用例个数"
         prop="testNum"
       >
-        <el-input
+        <el-input-number
           v-model.number="form.testNum"
           controls-position="right"
           placeholder="请输入单元测试用例个数"
           type="number"
+          :min="0"
         />
       </el-form-item>
       <el-form-item
         label="单元测试用例质量"
         prop="unitTestQualityScore"
       >
-        <el-input
+        <el-input-number
           v-model.number="form.unitTestQualityScore"
           controls-position="right"
           placeholder="请输入单元测试用例质量"
-          :min=0
-          :max=100
+          :precision="2"
+          :min="0"
+          :max="100"
           type="number"
         />
       </el-form-item>
@@ -97,13 +103,13 @@
         label="单元测试有效性"
         prop="unitTestEffectivenessScore"
       >
-        <el-input
+        <el-input-number
           v-model.number="form.unitTestEffectivenessScore"
           controls-position="right"
           placeholder="请输入单元测试有效性"
-          :min=0
-          :max=100
-
+          :precision="2"
+          :min="0"
+          :max="100"
           type="number"
         />
       </el-form-item>
@@ -111,64 +117,68 @@
         label="被评审产品代码行数"
         prop="codeLineNum"
       >
-        <el-input
+        <el-input-number
           v-model.number="form.codeLineNum"
           controls-position="right"
           placeholder="请输入被评审产品代码行数"
           type="number"
+          :min="0"
         />
       </el-form-item>
       <el-form-item
         label="千行代码单元测试用例密度"
         prop="unitTestDensity"
       >
-        {{this.form.unitTestDensity}}
+        {{unitTestDensity}}
       </el-form-item>
       <el-form-item
         label="单元测试行覆盖率"
         prop="lineCoverageRate"
       >
-        <el-input
+        <el-input-number
           v-model.number="form.lineCoverageRate"
           controls-position="right"
           placeholder="请输入单元测试行覆盖率"
-          style="width: 300px"
           type="number"
+          :min="0"
+          :max="100"
         /> %
       </el-form-item>
       <el-form-item
         label="单元测试分支覆盖率"
         prop="branchCoverageRate"
       >
-        <el-input
+        <el-input-number
           v-model.number="form.branchCoverageRate"
           controls-position="right"
           placeholder="请输入单元测试分支覆盖率"
-          style="width: 300px"
           type="number"
+          :min="0"
+          :max="100"
         /> %
       </el-form-item>
       <el-form-item
         label="产品质量打分"
         prop="productQualitySubjectiveScore"
       >
-        <el-input
+        <el-input-number
           v-model.number="form.productQualitySubjectiveScore"
           controls-position="right"
           placeholder="请输入产品质量打分"
-          style="width: 300px"
           type="number"
+          :precision="2"
+          :min="0"
+          :max="100"
         /> %
       </el-form-item>
       <el-form-item
         label="产品质量投票得分"
         prop="voteScore"
       >
-        <el-input
+        <el-input-number
           v-model.number="form.voteScore"
           controls-position="right"
           placeholder="请输入产品质量投票得分"
-          style="width: 300px"
           type="number"
         />
         <el-upload
@@ -217,10 +227,22 @@
 import { form } from '@crud/crud'
 
 const defaultForm = {
-  id: null,
-  name: '',
-  jobSort: 999,
-  enabled: true
+  unitTestStatus: 1,
+  successNumWithAssert: null,
+  successNumWithoutAssert: null,
+  failNumWithAssert: null,
+  failNumWithException: null,
+  testNum: null,
+  unitTestQualityScore: null,
+  unitTestEffectivenessScore: null,
+  codeLineNum: null,
+  unitTestDensity: null,
+  lineCoverageRate: null,
+  branchCoverageRate: null,
+  productQualitySubjectiveScore: null,
+  voteScore: null,
+  productQualityComprehensiveScore: null,
+  productQualityFinalScore: null
 }
 export default {
   mixins: [form(defaultForm)],
@@ -238,114 +260,116 @@ export default {
         this.form.successNumWithoutAssert = 0;
         this.inputDis = true;
       } else {
-        // this.form.successNumWithAssert = this.form.successNumWithAssert;
-        // this.form.failNumWithAssert =  this.form.failNumWithAssert;
-        // this.form.successNumWithoutAssert = this.form.successNumWithoutAssert ;
         this.inputDis = false;
       }
-    }/*,
-    "successNumWithAssert": function () {
-      this.form.unitTestDensity = this.form.successNumWithAssert / this.form.codeLineNum * 1000
-    },
-    "successNumWithAssert1": function () {
-      this.form.unitTestDensity = this.form.successNumWithAssert / this.form.codeLineNum * 1000
-    }*/
-  },
-  computed: {
-    // 千行代码单元测试用例密度=有断言且运行成功的用例数/被评审产品代码行数*1000）,结果保留2位小数
-    unitTestDensity: function(){
       var numReg = /^[0-9]*$/;
 
       var numRe = new RegExp(numReg);
       var result = 0;
-      if (numRe.test(this.form.successNumWithAssert) && numRe.test(this.form.codeLineNum)){
+      if (numRe.test(this.form.successNumWithAssert) && numRe.test(this.form.codeLineNum) && this.form.codeLineNum>0){
         result = this.form.successNumWithAssert / this.form.codeLineNum * 1000
       } else {
         result = 0;
       }
-      this.form.unitTestDensity = result
-      return result.toFixed(2);
+      this.form.unitTestDensity = result.toFixed(2)
+      this.unitTestDensity = result.toFixed(2)
+    }
+
+  },
+  computed: {
+    // 千行代码单元测试用例密度=有断言且运行成功的用例数/被评审产品代码行数*1000）,结果保留2位小数
+    unitTestDensity: {
+      get() {
+        var result = 0;
+        if (null!=this.form.successNumWithAssert
+          && null!=this.form.codeLineNum
+          && this.form.codeLineNum>0){
+          result = this.form.successNumWithAssert / this.form.codeLineNum * 1000
+        } else {
+          result = 0;
+        }
+        //this.form.unitTestDensity = result.toFixed(2)
+        return parseFloat(result.toFixed(2));
+      },
+      set(newValue) {
+        return newValue;
+      },
     },
     // 产品质量综合得分, 自动计算产品质量综合得分,公式是：单元测试用例质量*20%+单元测试有效性*10%+千行代码单元测试用例密度*30%+行覆盖率*20%+分支覆盖率*10%+产品代码质量打分*10%
     productQualityComprehensiveScore: function() {
-      var numReg = /^[0-9]*$/;
+      var result;
+      if (null!=this.form.unitTestQualityScore
+        && null!=this.form.unitTestEffectivenessScore
+        && null!=this.unitTestDensity
+        && null!=this.form.lineCoverageRate
+        && null!=this.form.branchCoverageRate
+        && null!=this.form.productQualitySubjectiveScore){
 
-      var numRe = new RegExp(numReg);
-      var result = 0;
-      /*if (numRe.test(this.form.unitTestQualityScore)
-        && numRe.test(this.form.unitTestEffectivenessScore)
-        && numRe.test(this.form.unitTestDensity)
-        && numRe.test(this.form.lineCoverageRate)
-        && numRe.test(this.form.branchCoverageRate)
-        && numRe.test(this.form.productQualitySubjectiveScore)){
-        result = this.form.unitTestQualityScore * 0.2 /!*+ this.form.unitTestEffectivenessScore * 0.1 + this.form.unitTestDensity * 0.3
-          + this.form.lineCoverageRate * 0.2 + this.form.branchCoverageRate * 0.1 + this.form.productQualitySubjectiveScore * 0.1*!/;
-      } else {
-        result = 0;
-      }*/
-      result = this.form.unitTestQualityScore * 0.2 + this.form.unitTestEffectivenessScore * 0.1 + this.form.unitTestDensity * 0.3
-      /*+ this.form.lineCoverageRate * 0.2 + this.form.branchCoverageRate * 0.1 + this.form.productQualitySubjectiveScore * 0.1*/;
-      return result;
-    },
-    // 产品质量最终得分=产品质量综合得分+产品质量投票得分
-    productQualityFinalScore: function () {
-      var numReg = /^[0-9]*$/
-
-      var numRe = new RegExp(numReg)
-      var result = 0;
-      if (numRe.test(this.form.productQualityComprehensiveScore)
-        && numRe.test(this.form.voteScore)){
-        result = this.form.productQualityComprehensiveScore + this.form.voteScore;
+        result = this.form.unitTestQualityScore * 0.2 + this.form.unitTestEffectivenessScore * 0.1 + this.unitTestDensity * 0.3
+        + this.form.lineCoverageRate * 0.2 + this.form.branchCoverageRate * 0.1  + this.form.productQualitySubjectiveScore * 0.1;
       } else {
         result = 0;
       }
-      return result;
+      //this.form.productQualityComprehensiveScore=result
+      return parseFloat(result.toFixed(2));
+    },
+    // 产品质量最终得分=产品质量综合得分+产品质量投票得分
+    productQualityFinalScore: function () {
+      var result;
+      if (null!=this.productQualityComprehensiveScore
+        && null!=this.form.voteScore){
+        result = this.productQualityComprehensiveScore + this.form.voteScore;
+      } else {
+        result = 0;
+      }
+      return parseFloat(result.toFixed(2));
     }
   },
   data() {
     return {
+      inputDis: false,
       rules: {
         unitTestStatus: [
           { required: true, message: '请选择单元测试运行状态', trigger: 'blur' }
         ],
         successNumWithAssert: [
-          { required: true, message: '请输入0-100之间的整数', trigger: 'blur', type: 'number' }
+          { required: true, message: '不能为空', trigger: 'blur', type: 'number' }
         ],
         successNumWithoutAssert: [
-          { required: true, message: '请输入0-100之间的整数', trigger: 'blur', type: 'number' }
+          { required: true, message: '不能为空', trigger: 'blur', type: 'number' }
         ],
         failNumWithAssert: [
-          { required: true, message: '请输入0-100之间的整数', trigger: 'blur', type: 'number' }
+          { required: true, message: '不能为空', trigger: 'blur', type: 'number' }
         ],
         failNumWithException: [
-          { required: true, message: '请输入0-100之间的整数', trigger: 'blur', type: 'number' }
+          { required: true, message: '不能为空', trigger: 'blur', type: 'number' }
         ],
         testNum: [
-          { required: true, message: '请输入0-100之间的整数', trigger: 'blur', type: 'number' }
+          { required: true, message: '不能为空', trigger: 'blur', type: 'number' }
         ],
         unitTestQualityScore: [
-          { required: true, message: '请输入0-100之间的整数', trigger: 'blur', type: 'number' }
+          { required: true, message: '不能为空', trigger: 'blur', type: 'number' }
         ],
         unitTestEffectivenessScore: [
-          { required: true, message: '请输入0-100之间的整数', trigger: 'blur', type: 'number' }
+          { required: true, message: '不能为空', trigger: 'blur', type: 'number' }
         ],
         codeLineNum: [
-          { required: true, message: '请输入0-100之间的整数', trigger: 'blur', type: 'number' }
+          { required: true, message: '不能为空', trigger: 'blur', type: 'number' }
         ],
         unitTestDensity: [
           { required: true, trigger: 'blur', type: 'number' }
         ],
         lineCoverageRate: [
-          { required: true, message: '请输入0-100之间的整数', trigger: 'blur', type: 'number' }
+          { required: true, message: '不能为空', trigger: 'blur', type: 'number' }
         ],
         branchCoverageRate: [
-          { required: true, message: '请输入0-100之间的整数', trigger: 'blur', type: 'number' }
+          { required: true, message: '不能为空', trigger: 'blur', type: 'number' }
         ],
         productQualitySubjectiveScore: [
-          { required: true, message: '请输入0-100之间的整数', trigger: 'blur', type: 'number' }
+          { required: true, message: '不能为空', trigger: 'blur', type: 'number' }
         ],
         voteScore: [
-          { required: true, message: '请输入0-100之间的整数', trigger: 'blur', type: 'number' }
+          { required: true, message: '不能为空', trigger: 'blur', type: 'number' }
         ],
         productQualityComprehensiveScore: [
           { required: true, trigger: 'blur', type: 'number' }
@@ -353,8 +377,7 @@ export default {
         productQualityFinalScore: [
           { required: true, trigger: 'blur', type: 'number' }
         ]
-      },
-      inputDis: false
+      }
     }
   },
   mounted() {
