@@ -236,13 +236,13 @@ const defaultForm = {
   unitTestQualityScore: null,
   unitTestEffectivenessScore: null,
   codeLineNum: null,
-  unitTestDensity1: null,
+  unitTestDensity: null,
   lineCoverageRate: null,
   branchCoverageRate: null,
   productQualitySubjectiveScore: null,
   voteScore: null,
-  productQualityComprehensiveScore1: null,
-  productQualityFinalScore1: null
+  productQualityComprehensiveScore: null,
+  productQualityFinalScore: null
 }
 export default {
   mixins: [form(defaultForm)],
