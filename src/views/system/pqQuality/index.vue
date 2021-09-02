@@ -27,7 +27,7 @@
       <el-table-column prop="createTime" label="创建日期" />
       <!--   编辑与删除   -->
       <el-table-column
-        v-if="checkPer(['admin','job:edit','job:del'])"
+        v-if="checkPer(['admin','pqQuality:edit','pqQuality:del'])"
         label="操作"
         width="130px"
         align="center"
@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import crudJob from '@/api/system/job'
+import crudJob from '@/api/system/pqQuality'
 import eHeader from './module/header'
 import eForm from './module/form'
 import CRUD, { presenter } from '@crud/crud'
@@ -57,13 +57,13 @@ import crudOperation from '@crud/CRUD.operation'
 import pagination from '@crud/Pagination'
 import udOperation from '@crud/UD.operation'
 export default {
-  name: 'Job',
+  name: 'pqQuality',
   components: { eHeader, eForm, crudOperation, pagination, udOperation },
   cruds() {
     return CRUD({
       title: '产品',
-      url: 'api/job',
-      sort: ['jobSort,asc', 'id,desc'],
+      url: 'api/pqQuality',
+      sort: ['id,desc'],
       crudMethod: { ...crudJob }
     })
   },
@@ -73,9 +73,9 @@ export default {
   data() {
     return {
       permission: {
-        add: ['admin', 'job:add'],
-        edit: ['admin', 'job:edit'],
-        del: ['admin', 'job:del']
+        add: ['admin', 'pqQuality:add'],
+        edit: ['admin', 'pqQuality:edit'],
+        del: ['admin', 'pqQuality:del']
       }
     }
   },

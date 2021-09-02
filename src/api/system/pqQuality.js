@@ -1,13 +1,13 @@
 import request from '@/utils/request'
 
-export function getAllJob() {
+export function getAllpqQuality() {
   const params = {
     page: 0,
     size: 9999,
     enabled: true
   }
   return request({
-    url: 'api/job',
+    url: 'api/pqQuality',
     method: 'get',
     params
   })
@@ -15,7 +15,7 @@ export function getAllJob() {
 
 export function add(data) {
   return request({
-    url: 'api/job',
+    url: 'api/pqQuality',
     method: 'post',
     data
   })
@@ -23,7 +23,7 @@ export function add(data) {
 
 export function del(ids) {
   return request({
-    url: 'api/job',
+    url: 'api/pqQuality',
     method: 'delete',
     data: ids
   })
@@ -31,7 +31,7 @@ export function del(ids) {
 
 export function edit(data) {
   return request({
-    url: 'api/job',
+    url: 'api/pqQuality',
     method: 'put',
     data
   })

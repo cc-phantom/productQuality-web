@@ -236,13 +236,13 @@ const defaultForm = {
   unitTestQualityScore: null,
   unitTestEffectivenessScore: null,
   codeLineNum: null,
-  unitTestDensity: null,
+  unitTestDensity1: null,
   lineCoverageRate: null,
   branchCoverageRate: null,
   productQualitySubjectiveScore: null,
   voteScore: null,
-  productQualityComprehensiveScore: null,
-  productQualityFinalScore: null
+  productQualityComprehensiveScore1: null,
+  productQualityFinalScore1: null
 }
 export default {
   mixins: [form(defaultForm)],
@@ -258,23 +258,12 @@ export default {
         this.form.successNumWithAssert = 0;
         this.form.failNumWithAssert = 0;
         this.form.successNumWithoutAssert = 0;
+        this.form.unitTestDensity = 0.00
         this.inputDis = true;
       } else {
         this.inputDis = false;
       }
-      var numReg = /^[0-9]*$/;
-
-      var numRe = new RegExp(numReg);
-      var result = 0;
-      if (numRe.test(this.form.successNumWithAssert) && numRe.test(this.form.codeLineNum) && this.form.codeLineNum>0){
-        result = this.form.successNumWithAssert / this.form.codeLineNum * 1000
-      } else {
-        result = 0;
-      }
-      this.form.unitTestDensity = result.toFixed(2)
-      this.unitTestDensity = result.toFixed(2)
     }
-
   },
   computed: {
     // 千行代码单元测试用例密度=有断言且运行成功的用例数/被评审产品代码行数*1000）,结果保留2位小数
@@ -288,7 +277,7 @@ export default {
         } else {
           result = 0;
         }
-        //this.form.unitTestDensity = result.toFixed(2)
+        this.form.unitTestDensity=parseFloat(result.toFixed(2))
         return parseFloat(result.toFixed(2));
       },
       set(newValue) {
@@ -296,33 +285,44 @@ export default {
       },
     },
     // 产品质量综合得分, 自动计算产品质量综合得分,公式是：单元测试用例质量*20%+单元测试有效性*10%+千行代码单元测试用例密度*30%+行覆盖率*20%+分支覆盖率*10%+产品代码质量打分*10%
-    productQualityComprehensiveScore: function() {
-      var result;
-      if (null!=this.form.unitTestQualityScore
-        && null!=this.form.unitTestEffectivenessScore
-        && null!=this.unitTestDensity
-        && null!=this.form.lineCoverageRate
-        && null!=this.form.branchCoverageRate
-        && null!=this.form.productQualitySubjectiveScore){
+    productQualityComprehensiveScore: {
+      get() {
+        var result;
+        if (null != this.form.unitTestQualityScore
+          && null != this.form.unitTestEffectivenessScore
+          && null != this.unitTestDensity
+          && null != this.form.lineCoverageRate
+          && null != this.form.branchCoverageRate
+          && null != this.form.productQualitySubjectiveScore) {
 
-        result = this.form.unitTestQualityScore * 0.2 + this.form.unitTestEffectivenessScore * 0.1 + this.unitTestDensity * 0.3
-        + this.form.lineCoverageRate * 0.2 + this.form.branchCoverageRate * 0.1  + this.form.productQualitySubjectiveScore * 0.1;
-      } else {
-        result = 0;
-      }
-      //this.form.productQualityComprehensiveScore=result
-      return parseFloat(result.toFixed(2));
+          result = this.form.unitTestQualityScore * 0.2 + this.form.unitTestEffectivenessScore * 0.1 + this.unitTestDensity * 0.3
+            + this.form.lineCoverageRate * 0.2 + this.form.branchCoverageRate * 0.1 + this.form.productQualitySubjectiveScore * 0.1;
+        } else {
+          result = 0;
+        }
+        this.form.productQualityComprehensiveScore=parseFloat(result.toFixed(2))
+        return parseFloat(result.toFixed(2));
+      },
+      set(newValue) {
+        return newValue;
+      },
     },
     // 产品质量最终得分=产品质量综合得分+产品质量投票得分
-    productQualityFinalScore: function () {
-      var result;
-      if (null!=this.productQualityComprehensiveScore
-        && null!=this.form.voteScore){
-        result = this.productQualityComprehensiveScore + this.form.voteScore;
-      } else {
-        result = 0;
-      }
-      return parseFloat(result.toFixed(2));
+    productQualityFinalScore: {
+      get() {
+        var result;
+        if (null != this.productQualityComprehensiveScore
+          && null != this.form.voteScore) {
+          result = this.productQualityComprehensiveScore + this.form.voteScore;
+        } else {
+          result = 0;
+        }
+        this.form.productQualityFinalScore=parseFloat(result.toFixed(2))
+        return parseFloat(result.toFixed(2));
+      },
+      set(newValue) {
+        return newValue;
+      },
     }
   },
   data() {

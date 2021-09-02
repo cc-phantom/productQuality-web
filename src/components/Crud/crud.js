@@ -8,7 +8,7 @@ import Vue from 'vue'
  * @param {*} options <br>
  * @return crud instance.
  * @example
- * 要使用多crud时，请在关联crud的组件处使用crud-tag进行标记，如：<jobForm :job-status="dict.job_status" crud-tag="job" />
+ * 要使用多crud时，请在关联crud的组件处使用crud-tag进行标记，如：<jobForm :pqQuality-status="dict.job_status" crud-tag="pqQuality" />
  */
 function CRUD(options) {
   const defaultOptions = {
