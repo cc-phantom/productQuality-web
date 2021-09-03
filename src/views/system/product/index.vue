@@ -8,8 +8,8 @@
         <el-input v-model="query.deptId" clearable placeholder="组织id" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">产品名称</label>
         <el-input v-model="query.productName" clearable placeholder="产品名称" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">是否启用：0 不启用；1 启用</label>
-        <el-input v-model="query.enabled" clearable placeholder="是否启用：0 不启用；1 启用" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">是否启用</label>
+        <el-input v-model="query.enabled" clearable placeholder="0 不启用；1 启用" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -17,29 +17,28 @@
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-          <el-form-item label="id">
-            <el-input v-model="form.id" style="width: 370px;" />
-          </el-form-item>
-          <el-form-item label="组织id" prop="deptId">
-            未设置字典，请手动设置 Select
+          <el-form-item label="组织" prop="dept.id">
+<!--            <treeselect-->
+<!--              v-model="form.dept.id"-->
+<!--              :options="depts"-->
+<!--              :load-options="loadDepts"-->
+<!--              style="width: 178px"-->
+<!--              placeholder="选择部门"-->
+<!--            />-->
+            <el-input v-model="form.deptId" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="产品名称" prop="productName">
             <el-input v-model="form.productName" style="width: 370px;" />
           </el-form-item>
-          <el-form-item label="是否启用：0 不启用；1 启用" prop="enabled">
-            <el-select v-model="form.enabled" filterable placeholder="请选择">
-              <el-option
-                v-for="item in dict.job_status"
-                :key="item.id"
-                :label="item.label"
-                :value="item.value" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="创建时间" prop="createTime">
-            <el-input v-model="form.createTime" style="width: 370px;" />
-          </el-form-item>
-          <el-form-item label="更新时间" prop="updateTime">
-            <el-input v-model="form.updateTime" style="width: 370px;" />
+          <el-form-item label="是否启用" prop="enabled">
+<!--            <el-select v-model="form.enabled" filterable placeholder="请选择">-->
+<!--              <el-option-->
+<!--                v-for="item in dict.job_status"-->
+<!--                :key="item.id"-->
+<!--                :label="item.label"-->
+<!--                :value="item.value" />-->
+<!--            </el-select>-->
+            <el-input v-model="form.enabled" style="width: 370px;" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -53,7 +52,7 @@
         <el-table-column prop="id" label="id" />
         <el-table-column prop="deptId" label="组织id" />
         <el-table-column prop="productName" label="产品名称" />
-        <el-table-column prop="enabled" label="是否启用：0 不启用；1 启用">
+        <el-table-column prop="enabled" label="是否启用">
           <template slot-scope="scope">
             {{ dict.label.job_status[scope.row.enabled] }}
           </template>
@@ -78,6 +77,7 @@
 <script>
 import crudPqProduct from '@/api/system/product'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
+import { getDepts, getDeptSuperior } from '@/api/system/dept'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
@@ -94,6 +94,7 @@ export default {
   },
   data() {
     return {
+      deptName: '', depts: [], deptDatas: [],
       permission: {
         add: ['admin', 'pqProduct:add'],
         edit: ['admin', 'pqProduct:edit'],
@@ -108,12 +109,6 @@ export default {
         ],
         enabled: [
           { required: true, message: '是否启用：0 不启用；1 启用不能为空', trigger: 'blur' }
-        ],
-        createTime: [
-          { required: true, message: '创建时间不能为空', trigger: 'blur' }
-        ],
-        updateTime: [
-          { required: true, message: '更新时间不能为空', trigger: 'blur' }
         ]
       },
       queryTypeOptions: [
@@ -127,7 +122,45 @@ export default {
     // 钩子：在获取表格数据之前执行，false 则代表不获取数据
     [CRUD.HOOK.beforeRefresh]() {
       return true
-    }
+    },
+    // 获取左侧部门数据
+    getDeptDatas(node, resolve) {
+      const sort = 'id,desc'
+      const params = { sort: sort }
+      if (typeof node !== 'object') {
+        if (node) {
+          params['name'] = node
+        }
+      } else if (node.level !== 0) {
+        params['pid'] = node.data.id
+      }
+      setTimeout(() => {
+        getDepts(params).then(res => {
+          if (resolve) {
+            resolve(res.content)
+          } else {
+            this.deptDatas = res.content
+          }
+        })
+      }, 100)
+    },
+    getDepts() {
+      getDepts({ enabled: true }).then(res => {
+        this.depts = res.content.map(function(obj) {
+          if (obj.hasChildren) {
+            obj.children = null
+          }
+          return obj
+        })
+      })
+    },
+    getSupDepts(deptId) {
+      getDeptSuperior(deptId).then(res => {
+        const date = res.content
+        this.buildDepts(date)
+        this.depts = date
+      })
+    },
   }
 }
 </script>
