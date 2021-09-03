@@ -7,7 +7,7 @@ export function getAllProduct() {
     enabled: true
   }
   return request({
-    url: 'api/pqProduct',
+    url: 'api/pqQuality',
     method: 'get',
     params
   })

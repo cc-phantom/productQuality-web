@@ -63,8 +63,8 @@ export default {
   cruds() {
     return CRUD({
       title: '产品',
-      url: 'api/pqProduct',
-      sort: ['productId,desc'],
+      url: 'api/pqQuality',
+      sort: ['id,desc'],
       crudMethod: { ...crudProduct }
     })
   },
