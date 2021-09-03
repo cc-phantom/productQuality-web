@@ -8,14 +8,13 @@
     <!--表格渲染-->
     <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
       <el-table-column type="selection" width="55" />
-      <el-table-column prop="productSort" label="id">
+      <el-table-column prop="name" label="名称" />
+      <el-table-column prop="jobSort" label="排序">
         <template slot-scope="scope">
-          {{ scope.row.id }}
+          {{ scope.row.jobSort }}
         </template>
       </el-table-column>
-      <el-table-column prop="productName" label="名称" />
-      <el-table-column prop="deptId" label="部门" />
-      <el-table-column prop="enabled" label="状态" align="center">
+      <el-table-column prop="status" label="状态" align="center">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.enabled"
@@ -28,7 +27,7 @@
       <el-table-column prop="createTime" label="创建日期" />
       <!--   编辑与删除   -->
       <el-table-column
-        v-if="checkPer(['admin','quality:edit','quality:del'])"
+        v-if="checkPer(['admin','job:edit','job:del'])"
         label="操作"
         width="130px"
         align="center"
@@ -50,7 +49,7 @@
 </template>
 
 <script>
-import crudProduct from '@/api/system/quality'
+import crudJob from '@/api/system/job'
 import eHeader from './module/header'
 import eForm from './module/form'
 import CRUD, { presenter } from '@crud/crud'
@@ -58,14 +57,14 @@ import crudOperation from '@crud/CRUD.operation'
 import pagination from '@crud/Pagination'
 import udOperation from '@crud/UD.operation'
 export default {
-  name: 'quality',
+  name: 'Job',
   components: { eHeader, eForm, crudOperation, pagination, udOperation },
   cruds() {
     return CRUD({
-      title: '产品',
-      url: 'api/pqQuality',
-      sort: ['id,desc'],
-      crudMethod: { ...crudProduct }
+      title: '岗位',
+      url: 'api/job',
+      sort: ['jobSort,asc', 'id,desc'],
+      crudMethod: { ...crudJob }
     })
   },
   mixins: [presenter()],
@@ -74,16 +73,16 @@ export default {
   data() {
     return {
       permission: {
-        add: ['admin', 'pqQuality:add'],
-        edit: ['admin', 'pqQuality:edit'],
-        del: ['admin', 'pqQuality:del']
+        add: ['admin', 'job:add'],
+        edit: ['admin', 'job:edit'],
+        del: ['admin', 'job:del']
       }
     }
   },
   methods: {
     // 改变状态
     changeEnabled(data, val) {
-      this.$confirm('此操作将 "' + this.dict.label.job_status[val] + '" ' + data.name + '产品, 是否继续？', '提示', {
+      this.$confirm('此操作将 "' + this.dict.label.job_status[val] + '" ' + data.name + '岗位, 是否继续？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

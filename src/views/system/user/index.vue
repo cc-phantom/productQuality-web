@@ -192,6 +192,8 @@ import crudUser from '@/api/system/user'
 import { isvalidPhone } from '@/utils/validate'
 import { getDepts, getDeptSuperior } from '@/api/system/dept'
 import { getAll, getLevel } from '@/api/system/role'
+
+import { getAllProduct } from '@/api/system/product'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
@@ -452,7 +454,7 @@ export default {
     },
     // 获取弹窗内产品数据
     getJobs() {
-      getAllpqQuality().then(res => {
+      getAllProduct().then(res => {
         this.jobs = res.content
       }).catch(() => { })
     },
