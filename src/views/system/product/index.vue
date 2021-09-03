@@ -4,12 +4,13 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
-        <label class="el-form-item-label">组织id</label>
-        <el-input v-model="query.deptId" clearable placeholder="组织id" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">部门</label>
+        <el-input v-model="query.deptId" clearable placeholder="部门" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">产品名称</label>
         <el-input v-model="query.productName" clearable placeholder="产品名称" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">是否启用</label>
-        <el-input v-model="query.enabled" clearable placeholder="0 不启用；1 启用" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <el-select v-model="query.enabled" clearable size="small" placeholder="状态" class="filter-item" style="width: 90px" @change="crud.toQuery">
+          <el-option v-for="item in dict.dict.job_status" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -18,13 +19,7 @@
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
           <el-form-item label="组织" prop="dept.id">
-<!--            <treeselect-->
-<!--              v-model="form.dept.id"-->
-<!--              :options="depts"-->
-<!--              :load-options="loadDepts"-->
-<!--              style="width: 178px"-->
-<!--              placeholder="选择部门"-->
-<!--            />-->
+
             <el-input v-model="form.deptId" style="width: 370px;" />
           </el-form-item>
           <el-form-item label="产品名称" prop="productName">
@@ -49,12 +44,16 @@
       <!--表格渲染-->
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
-        <el-table-column prop="id" label="id" />
-        <el-table-column prop="deptId" label="组织id" />
-        <el-table-column prop="productName" label="产品名称" />
-        <el-table-column prop="enabled" label="是否启用">
+        <el-table-column prop="productName" label="产品" />
+        <el-table-column prop="dept.name" label="部门" />
+        <el-table-column prop="enabled" label="状态" align="center">
           <template slot-scope="scope">
-            {{ dict.label.job_status[scope.row.enabled] }}
+            <el-switch
+              v-model="scope.row.enabled"
+              active-color="#409EFF"
+              inactive-color="#F56C6C"
+              @change="changeEnabled(scope.row, scope.row.enabled)"
+            />
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="创建时间" />

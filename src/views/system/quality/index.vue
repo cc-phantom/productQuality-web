@@ -8,14 +8,14 @@
     <!--表格渲染-->
     <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
       <el-table-column type="selection" width="55" />
-      <el-table-column prop="productSort" label="id">
+<!--      <el-table-column prop="productSort" label="id">
         <template slot-scope="scope">
           {{ scope.row.id }}
         </template>
-      </el-table-column>
-      <el-table-column prop="productName" label="名称" />
-      <el-table-column prop="deptId" label="部门" />
-      <el-table-column prop="enabled" label="状态" align="center">
+      </el-table-column>-->
+      <el-table-column prop="pqProduct.productName" label="产品名称" />
+      <el-table-column prop="dept.name" label="部门" />
+<!--      <el-table-column prop="enabled" label="状态" align="center">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.enabled"
@@ -24,7 +24,10 @@
             @change="changeEnabled(scope.row, scope.row.enabled)"
           />
         </template>
-      </el-table-column>
+      </el-table-column>-->
+      <el-table-column prop="productQualityComprehensiveScore" label="产品质量综合得分" />
+      <el-table-column prop="voteScore" label="产品质量投票得分" />
+      <el-table-column prop="productQualityFinalScore" label="产品质量最终得分" />
       <el-table-column prop="createTime" label="创建日期" />
       <!--   编辑与删除   -->
       <el-table-column
