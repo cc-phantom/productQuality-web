@@ -1,5 +1,18 @@
 import request from '@/utils/request'
 
+export function getAllQuality() {
+  const params = {
+    page: 0,
+    size: 9999,
+    enabled: true
+  }
+  return request({
+    url: 'api/pqQuality',
+    method: 'get',
+    params
+  })
+}
+
 export function add(data) {
   return request({
     url: 'api/pqQuality',
