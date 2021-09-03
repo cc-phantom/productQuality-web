@@ -83,7 +83,7 @@
                 placeholder="选择部门"
               />
             </el-form-item>
-            <el-form-item label="产品" prop="jobs">
+            <el-form-item label="岗位" prop="jobs">
               <el-select
                 v-model="jobDatas"
                 style="width: 178px"
@@ -192,8 +192,7 @@ import crudUser from '@/api/system/user'
 import { isvalidPhone } from '@/utils/validate'
 import { getDepts, getDeptSuperior } from '@/api/system/dept'
 import { getAll, getLevel } from '@/api/system/role'
-
-import { getAllProduct } from '@/api/system/product'
+import { getAllJob } from '@/api/system/job'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
@@ -313,7 +312,7 @@ export default {
       this.jobDatas = []
       this.roleDatas = []
     },
-    // 初始化编辑时候的角色与产品
+    // 初始化编辑时候的角色与岗位
     [CRUD.HOOK.beforeToEdit](crud, form) {
       this.getJobs(this.form.dept.id)
       this.jobDatas = []
@@ -342,7 +341,7 @@ export default {
         return false
       } else if (this.jobDatas.length === 0) {
         this.$message({
-          message: '产品不能为空',
+          message: '岗位不能为空',
           type: 'warning'
         })
         return false
@@ -452,9 +451,9 @@ export default {
         this.roles = res
       }).catch(() => { })
     },
-    // 获取弹窗内产品数据
+    // 获取弹窗内岗位数据
     getJobs() {
-      getAllProduct().then(res => {
+      getAllJob().then(res => {
         this.jobs = res.content
       }).catch(() => { })
     },
