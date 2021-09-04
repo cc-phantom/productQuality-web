@@ -4,13 +4,13 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
-        <label class="el-form-item-label">部门</label>
-        <el-input v-model="query.deptId" clearable placeholder="部门" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+        <label class="el-form-item-label">团队</label>
+        <el-input v-model="query.deptId" clearable placeholder="团队" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
         <label class="el-form-item-label">产品名称</label>
         <el-input v-model="query.productName" clearable placeholder="产品名称" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <el-select v-model="query.enabled" clearable size="small" placeholder="状态" class="filter-item" style="width: 90px" @change="crud.toQuery">
-          <el-option v-for="item in dict.dict.job_status" :key="item.value" :label="item.label" :value="item.value" />
-        </el-select>
+<!--        <el-select v-model="query.enabled" clearable size="small" placeholder="状态" class="filter-item" style="width: 90px" @change="crud.toQuery">
+          <el-option v-for="item in dict.dict.product_status" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>-->
         <rrOperation :crud="crud" />
       </div>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
@@ -18,23 +18,28 @@
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
-          <el-form-item label="组织" prop="dept.id">
+          <el-form-item label="团队" prop="dept.id">
+            <treeselect
+              v-model="form.dept.id"
+              :options="depts"
+              :load-options="loadDepts"
+              style="width: 178px"
+              placeholder="选择团队"
+            />
+          </el-form-item>
 
-            <el-input v-model="form.deptId" style="width: 370px;" />
-          </el-form-item>
           <el-form-item label="产品名称" prop="productName">
-            <el-input v-model="form.productName" style="width: 370px;" />
+            <el-input v-model="form.productName" style="width: 370px;" placeholder="请输入产品名称" />
           </el-form-item>
-          <el-form-item label="是否启用" prop="enabled">
-<!--            <el-select v-model="form.enabled" filterable placeholder="请选择">-->
-<!--              <el-option-->
-<!--                v-for="item in dict.job_status"-->
-<!--                :key="item.id"-->
-<!--                :label="item.label"-->
-<!--                :value="item.value" />-->
-<!--            </el-select>-->
-            <el-input v-model="form.enabled" style="width: 370px;" />
-          </el-form-item>
+<!--          <el-form-item label="是否启用" prop="enabled">
+            <el-select v-model="form.enabled" filterable placeholder="请选择">
+              <el-option
+                v-for="item in dict.product_status"
+                :key="item.id"
+                :label="item.label"
+                :value="item.value" />
+            </el-select>
+          </el-form-item>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button type="text" @click="crud.cancelCU">取消</el-button>
@@ -45,8 +50,8 @@
       <el-table ref="table" v-loading="crud.loading" :data="crud.data" size="small" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="productName" label="产品" />
-        <el-table-column prop="dept.name" label="部门" />
-        <el-table-column prop="enabled" label="状态" align="center">
+        <el-table-column prop="dept.name" label="团队" />
+<!--        <el-table-column prop="enabled" label="状态" align="center">
           <template slot-scope="scope">
             <el-switch
               v-model="scope.row.enabled"
@@ -55,7 +60,7 @@
               @change="changeEnabled(scope.row, scope.row.enabled)"
             />
           </template>
-        </el-table-column>
+        </el-table-column>-->
         <el-table-column prop="createTime" label="创建时间" />
         <el-table-column prop="updateTime" label="更新时间" />
         <el-table-column v-if="checkPer(['admin','pqProduct:edit','pqProduct:del'])" label="操作" width="150px" align="center">
@@ -74,22 +79,25 @@
 </template>
 
 <script>
-import crudPqProduct from '@/api/system/product'
+import crudProduct from '@/api/system/product'
 import CRUD, { presenter, header, form, crud } from '@crud/crud'
 import { getDepts, getDeptSuperior } from '@/api/system/dept'
 import rrOperation from '@crud/RR.operation'
 import crudOperation from '@crud/CRUD.operation'
 import udOperation from '@crud/UD.operation'
-import pagination from '@crud/Pagination'
-
-const defaultForm = { id: null, deptId: null, productName: null, enabled: null, createTime: null, updateTime: null }
+import pagination from '@crud/Pagination';
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import {LOAD_CHILDREN_OPTIONS} from "@riophae/vue-treeselect";
+const defaultForm = { productName: null, enabled: 1, dept: { id: null} }
+// const defaultForm = { id: null, username: null, nickName: null, gender: '男', email: null, enabled: 'false', roles: [], jobs: [], dept: { id: null }, phone: null }
 export default {
   name: 'PqProduct',
-  components: { pagination, crudOperation, rrOperation, udOperation },
+  components: { Treeselect, pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
-  dicts: ['job_status'],
+  dicts: ['product_status'],
   cruds() {
-    return CRUD({ title: '产品', url: 'api/pqProduct', idField: 'id', sort: 'id,desc', crudMethod: { ...crudPqProduct }})
+    return CRUD({ title: '产品', url: 'api/pqProduct', idField: 'id', sort: 'id,desc', crudMethod: { ...crudProduct }})
   },
   data() {
     return {
@@ -100,8 +108,8 @@ export default {
         del: ['admin', 'pqProduct:del']
       },
       rules: {
-        deptId: [
-          { required: true, message: '组织id不能为空', trigger: 'blur' }
+        dept: [
+          { required: true, message: '团队不能为空', trigger: 'blur' }
         ],
         productName: [
           { required: true, message: '产品名称不能为空', trigger: 'blur' }
@@ -118,11 +126,28 @@ export default {
     }
   },
   methods: {
-    // 钩子：在获取表格数据之前执行，false 则代表不获取数据
-    [CRUD.HOOK.beforeRefresh]() {
+    // 新增与编辑前做的操作
+    [CRUD.HOOK.afterToCU](crud, form) {
+      if (form.id == null) {
+        this.getDepts()
+      } else {
+        this.getSupDepts(form.dept.id)
+      }
+    },
+    // 钩子：在新增和编辑时获取团队数据
+    [CRUD.HOOK.beforeToCU]() {
+      if (form.id == null) {
+        this.getDepts()
+      } else {
+        this.getSupDepts(form.dept.id)
+      }
+    },
+    // 提交前做的操作
+    [CRUD.HOOK.afterValidateCU]() {
+
       return true
     },
-    // 获取左侧部门数据
+    // 获取左侧团队数据
     getDeptDatas(node, resolve) {
       const sort = 'id,desc'
       const params = { sort: sort }
@@ -160,6 +185,41 @@ export default {
         this.depts = date
       })
     },
+    buildDepts(depts) {
+      depts.forEach(data => {
+        if (data.children) {
+          this.buildDepts(data.children)
+        }
+        if (data.hasChildren && !data.children) {
+          data.children = null
+        }
+      })
+    },
+    // 获取弹窗内团队数据
+    loadDepts({ action, parentNode, callback }) {
+      if (action === LOAD_CHILDREN_OPTIONS) {
+        getDepts({ enabled: true, pid: parentNode.id }).then(res => {
+          parentNode.children = res.content.map(function(obj) {
+            if (obj.hasChildren) {
+              obj.children = null
+            }
+            return obj
+          })
+          setTimeout(() => {
+            callback()
+          }, 200)
+        })
+      }
+    },
+    // 切换团队
+    handleNodeClick(data) {
+      if (data.pid === 0) {
+        this.query.deptId = null
+      } else {
+        this.query.deptId = data.id
+      }
+      this.crud.toQuery()
+    }
   }
 }
 </script>

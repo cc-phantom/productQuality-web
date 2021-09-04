@@ -14,7 +14,7 @@
         </template>
       </el-table-column>-->
       <el-table-column prop="pqProduct.productName" label="产品名称" />
-      <el-table-column prop="dept.name" label="部门" />
+      <el-table-column prop="dept.name" label="团队" />
 <!--      <el-table-column prop="enabled" label="状态" align="center">
         <template slot-scope="scope">
           <el-switch
@@ -29,9 +29,10 @@
       <el-table-column prop="voteScore" label="产品质量投票得分" />
       <el-table-column prop="productQualityFinalScore" label="产品质量最终得分" />
       <el-table-column prop="createTime" label="创建日期" />
+      <el-table-column prop="updateTime" label="修改日期" />
       <!--   编辑与删除   -->
       <el-table-column
-        v-if="checkPer(['admin','quality:edit','quality:del'])"
+        v-if="checkPer(['admin','qpQuality:edit','qpQuality:del'])"
         label="操作"
         width="130px"
         align="center"
@@ -41,6 +42,7 @@
           <udOperation
             :data="scope.row"
             :permission="permission"
+            :show-del="false"
           />
         </template>
       </el-table-column>
@@ -68,7 +70,14 @@ export default {
       title: '产品质量',
       url: 'api/pqQuality',
       sort: ['id,desc'],
-      crudMethod: { ...getAllQuality }
+      crudMethod: { ...getAllQuality },
+      optShow: {
+        add: false,
+        edit: true,
+        del: false,
+        download: true,
+        reset: true
+      }
     })
   },
   mixins: [presenter()],
