@@ -6,15 +6,21 @@
       <crudOperation :permission="permission" />
     </div>
     <!--表格渲染-->
-    <el-table ref="table" v-loading="crud.loading" :data="crud.data" style="width: 100%;" @selection-change="crud.selectionChangeHandler">
+    <el-table ref="table"
+              v-loading="crud.loading"
+              :data="crud.data"
+              style="width: 100%;"
+              @selection-change="crud.selectionChangeHandler"
+              @sort-change="onSortChange"
+    >
       <el-table-column type="selection" width="55" />
 <!--      <el-table-column prop="productSort" label="id">
         <template slot-scope="scope">
           {{ scope.row.id }}
         </template>
       </el-table-column>-->
-      <el-table-column prop="pqProduct.productName" label="产品名称" />
-      <el-table-column prop="dept.name" label="团队" />
+      <el-table-column prop="pqProduct.productName" label="产品名称" sortable="custom"/>
+      <el-table-column prop="dept.name" label="团队" sortable="custom"/>
 <!--      <el-table-column prop="enabled" label="状态" align="center">
         <template slot-scope="scope">
           <el-switch
@@ -25,11 +31,11 @@
           />
         </template>
       </el-table-column>-->
-      <el-table-column prop="productQualityComprehensiveScore" label="产品质量综合得分" />
-      <el-table-column prop="voteScore" label="产品质量投票得分" />
-      <el-table-column prop="productQualityFinalScore" label="产品质量最终得分" />
-      <el-table-column prop="createTime" label="创建日期" />
-      <el-table-column prop="updateTime" label="修改日期" />
+      <el-table-column prop="productQualityComprehensiveScore" label="产品质量综合得分" sortable="custom"/>
+      <el-table-column prop="voteScore" label="产品质量投票得分" sortable="custom"/>
+      <el-table-column prop="productQualityFinalScore" label="产品质量最终得分" sortable="custom"/>
+      <el-table-column prop="createTime" label="创建日期" sortable="custom"/>
+      <el-table-column prop="updateTime" label="修改日期" sortable="custom"/>
       <!--   编辑与删除   -->
       <el-table-column
         v-if="checkPer(['admin','qpQuality:edit','qpQuality:del'])"
@@ -58,7 +64,7 @@
 import getAllQuality from '@/api/system/quality'
 import eHeader from './module/header'
 import eForm from './module/form'
-import CRUD, { presenter } from '@crud/crud'
+import CRUD, { presenter, crud } from '@crud/crud'
 import crudOperation from '@crud/CRUD.operation'
 import pagination from '@crud/Pagination'
 import udOperation from '@crud/UD.operation'
@@ -69,7 +75,7 @@ export default {
     return CRUD({
       title: '产品质量',
       url: 'api/pqQuality',
-      sort: ['id,desc'],
+      sort: ['createTime,desc'],
       crudMethod: { ...getAllQuality },
       optShow: {
         add: false,
@@ -111,7 +117,12 @@ export default {
       }).catch(() => {
         data.enabled = !data.enabled
       })
-    }
+    },
+    onSortChange({ prop, order }) {
+      let sortItem = prop+","+(order==="ascending"?"asc":"desc")
+      this.crud.sort=[sortItem]
+      this.crud.toQuery()
+    },
   }
 }
 </script>

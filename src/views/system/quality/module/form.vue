@@ -181,13 +181,13 @@
           placeholder="请输入产品质量投票得分"
           type="number"
         />
-        <el-upload
+<!--        <el-upload
           action="https://jsonplaceholder.typicode.com/posts/"
           accept=".xlsx,.xls"
           >
           <el-button size="small" type="primary" style="margin-top: 10px;">点击上传</el-button>
           <div slot="tip" class="el-upload__tip">只能上传Excel文件，且不超过500kb</div>
-        </el-upload>
+        </el-upload>-->
       </el-form-item>
       <el-form-item
         label="产品质量综合得分"

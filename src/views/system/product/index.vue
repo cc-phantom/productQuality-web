@@ -4,10 +4,10 @@
     <div class="head-container">
       <div v-if="crud.props.searchToggle">
         <!-- 搜索 -->
-        <label class="el-form-item-label">产品名称</label>
+<!--        <label class="el-form-item-label">产品名称</label>-->
         <el-input v-model="query.productName" clearable placeholder="输入产品名称搜索" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
-        <label class="el-form-item-label">团队</label>
-        <el-input v-model="query.deptName" clearable placeholder="输入团队名称搜索" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />
+<!--        <label class="el-form-item-label">团队</label>
+        <el-input v-model="query.deptName" clearable placeholder="输入团队名称搜索" style="width: 185px;" class="filter-item" @keyup.enter.native="crud.toQuery" />-->
 <!--        <el-select v-model="query.enabled" clearable size="small" placeholder="状态" class="filter-item" style="width: 90px" @change="crud.toQuery">
           <el-option v-for="item in dict.dict.product_status" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>-->
