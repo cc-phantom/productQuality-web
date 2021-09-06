@@ -85,6 +85,7 @@ export default {
   data() {
     return {
       permission: {
+        get: ['admin', 'storage:get'],
         del: ['admin', 'storage:del']
       },
       title: '文件', dialog: false,

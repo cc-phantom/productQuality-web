@@ -124,6 +124,7 @@ export default {
       loading: false,
       headers: { 'Authorization': getToken() },
       permission: {
+        get: ['admin', 'storage:get'],
         edit: ['admin', 'storage:edit'],
         del: ['admin', 'storage:del']
       }

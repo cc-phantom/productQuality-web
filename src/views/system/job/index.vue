@@ -73,6 +73,7 @@ export default {
   data() {
     return {
       permission: {
+        get: ['admin', 'job:get'],
         add: ['admin', 'job:add'],
         edit: ['admin', 'job:edit'],
         del: ['admin', 'job:del']

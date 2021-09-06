@@ -127,6 +127,7 @@ export default {
         ]
       },
       permission: {
+        get: ['admin', 'dept:get'],
         add: ['admin', 'dept:add'],
         edit: ['admin', 'dept:edit'],
         del: ['admin', 'dept:del']

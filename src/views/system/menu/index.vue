@@ -172,6 +172,7 @@ export default {
     return {
       menus: [],
       permission: {
+        get: ['admin', 'menu:get'],
         add: ['admin', 'menu:add'],
         edit: ['admin', 'menu:edit'],
         del: ['admin', 'menu:del']

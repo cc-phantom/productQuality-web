@@ -1,5 +1,6 @@
 <template>
   <div>
+    <el-button v-permission="permission.get" :loading="crud.status.cu === 2" slot="reference" v-show="showDetail" type="info" icon="el-icon-view" size="mini" @click="crud.showDetail(data)" />
     <el-button v-permission="permission.edit" :loading="crud.status.cu === 2" :disabled="disabledEdit" size="mini" type="primary" icon="el-icon-edit" @click="crud.toEdit(data)" />
     <el-popover v-model="pop" v-permission="permission.del" placement="top" width="180" trigger="manual" @show="onPopoverShow" @hide="onPopoverHide">
       <p>{{ msg }}</p>
@@ -36,7 +37,10 @@ export default {
       type: Boolean,
       default: true
     },
-
+    showDetail: {
+      type: Boolean,
+      default: false
+    },
     msg: {
       type: String,
       default: '确定删除本条数据吗？'

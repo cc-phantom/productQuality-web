@@ -95,6 +95,7 @@ export default {
     return {
       currentRow: null,
       permission: {
+        get: ['admin', 'app:get'],
         add: ['admin', 'app:add'],
         edit: ['admin', 'app:edit'],
         del: ['admin', 'app:del']

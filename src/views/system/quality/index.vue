@@ -34,6 +34,7 @@
             :data="scope.row"
             :permission="permission"
             :show-del="false"
+            :show-detail="true"
           />
         </template>
       </el-table-column>
@@ -78,6 +79,7 @@ export default {
   data() {
     return {
       permission: {
+        get: ['admin', 'pqQuality:get'],
         add: ['admin', 'pqQuality:add'],
         edit: ['admin', 'pqQuality:edit'],
         del: ['admin', 'pqQuality:del']

@@ -103,6 +103,7 @@ export default {
     return {
       deptName: '', depts: [], deptDatas: [],
       permission: {
+        get: ['admin', 'pqProduct:get'],
         add: ['admin', 'pqProduct:add'],
         edit: ['admin', 'pqProduct:edit'],
         del: ['admin', 'pqProduct:del']

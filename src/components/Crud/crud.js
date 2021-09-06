@@ -55,7 +55,9 @@ function CRUD(options) {
     // 在主页准备
     queryOnPresenterCreated: true,
     // 调试开关
-    debug: false
+    debug: false,
+    // 是否展示详情弹窗
+    isShowDetail: false
   }
   options = mergeOptions(defaultOptions, options)
   const data = {
@@ -63,8 +65,10 @@ function CRUD(options) {
     // 记录数据状态
     dataStatus: {},
     status: {
+      get: CRUD.STATUS.NORMAL,
       add: CRUD.STATUS.NORMAL,
       edit: CRUD.STATUS.NORMAL,
+      // detail:CRUD.STATUS.NORMAL,
       // 添加或编辑状态
       get cu() {
         if (this.add === CRUD.STATUS.NORMAL && this.edit === CRUD.STATUS.NORMAL) {
@@ -78,7 +82,7 @@ function CRUD(options) {
       },
       // 标题
       get title() {
-        return this.add > CRUD.STATUS.NORMAL ? `新增${crud.title}` : this.edit > CRUD.STATUS.NORMAL ? `编辑${crud.title}` : crud.title
+        return this.add > CRUD.STATUS.NORMAL ? `新增${crud.title}` : this.edit > CRUD.STATUS.NORMAL ? (this.get > CRUD.STATUS.NORMAL ? `${crud.title}详情` : `编辑${crud.title}`) : `${crud.title}`
       }
     },
     msg: {
@@ -179,6 +183,20 @@ function CRUD(options) {
       callVmHook(crud, CRUD.HOOK.afterToCU, crud.form)
     },
     /**
+     * 展示详情
+     * @param {*} data 数据项
+     */
+    showDetail(data) {
+      crud.isShowDetail = true;
+      crud.resetForm(JSON.parse(JSON.stringify(data)))
+      if (!(callVmHook(crud, CRUD.HOOK.beforeToEdit, crud.form) && callVmHook(crud, CRUD.HOOK.beforeToCU, crud.form))) {
+        return
+      }
+      crud.status.get = CRUD.STATUS.PREPARED,
+      crud.status.edit = CRUD.STATUS.PREPARED
+      crud.getDataStatus(crud.getDataId(data)).edit = CRUD.STATUS.PREPARED
+    },
+    /**
      * 启动删除
      * @param {*} data 数据项
      */
@@ -202,6 +220,10 @@ function CRUD(options) {
     cancelCU() {
       const addStatus = crud.status.add
       const editStatus = crud.status.edit
+      if (crud.isShowDetail) {
+        crud.isShowDetail = false;
+      }
+
       if (addStatus === CRUD.STATUS.PREPARED) {
         if (!callVmHook(crud, CRUD.HOOK.beforeAddCancel, crud.form)) {
           return

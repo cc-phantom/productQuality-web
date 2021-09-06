@@ -92,6 +92,7 @@ export default {
       databaseInfo: '',
       loading: false,
       permission: {
+        get: ['admin', 'database:get'],
         add: ['admin', 'database:add'],
         edit: ['admin', 'database:edit'],
         del: ['admin', 'database:del']

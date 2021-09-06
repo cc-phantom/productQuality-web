@@ -233,6 +233,7 @@ export default {
       jobDatas: [], roleDatas: [], // 多选时使用
       defaultProps: { children: 'children', label: 'name', isLeaf: 'leaf' },
       permission: {
+        get: ['admin', 'user:get'],
         add: ['admin', 'user:add'],
         edit: ['admin', 'user:edit'],
         del: ['admin', 'user:del']

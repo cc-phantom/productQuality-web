@@ -18,8 +18,8 @@
         label="单元测试用例是否运行成功"
         prop="unitTestStatus"
       >
-        <el-radio v-model="form.unitTestStatus" :label=1>是</el-radio>
-        <el-radio v-model="form.unitTestStatus" :label=2>否</el-radio>
+        <el-radio v-model="form.unitTestStatus" :label=1 :disabled="crud.isShowDetail">是</el-radio>
+        <el-radio v-model="form.unitTestStatus" :label=2 :disabled="crud.isShowDetail">否</el-radio>
       </el-form-item>
 
       <el-form-item
@@ -28,7 +28,7 @@
       >
         <el-input-number
           v-model.number="form.successNumWithAssert"
-          :disabled="inputDis"
+          :disabled="inputDis || crud.isShowDetail"
           placeholder="请输入有断言且运行成功的用例数"
           controls-position="right"
           type="number"
@@ -41,7 +41,7 @@
       >
         <el-input-number
           v-model.number="form.successNumWithoutAssert"
-          :disabled="inputDis"
+          :disabled="inputDis || crud.isShowDetail"
           placeholder="请输入没有断言但运行成功的用例数"
           controls-position="right"
           type="number"
@@ -54,7 +54,7 @@
       >
         <el-input-number
           v-model.number="form.failNumWithAssert"
-          :disabled="inputDis"
+          :disabled="inputDis || crud.isShowDetail"
           placeholder="请输入比对断言运行失败的用例数"
           controls-position="right"
           type="number"
@@ -71,6 +71,7 @@
           placeholder="请输入异常失败的用例数"
           type="number"
           :min="0"
+          :disabled="crud.isShowDetail"
         />
       </el-form-item>
       <el-form-item
@@ -83,6 +84,7 @@
           placeholder="请输入单元测试用例个数"
           type="number"
           :min="0"
+          :disabled="crud.isShowDetail"
         />
       </el-form-item>
       <el-form-item
@@ -97,6 +99,7 @@
           :min="0"
           :max="100"
           type="number"
+          :disabled="crud.isShowDetail"
         />
       </el-form-item>
       <el-form-item
@@ -111,6 +114,7 @@
           :min="0"
           :max="100"
           type="number"
+          :disabled="crud.isShowDetail"
         />
       </el-form-item>
       <el-form-item
@@ -123,6 +127,7 @@
           placeholder="请输入被评审产品代码行数"
           type="number"
           :min="0"
+          :disabled="crud.isShowDetail"
         />
       </el-form-item>
       <el-form-item
@@ -142,6 +147,7 @@
           type="number"
           :min="0"
           :max="100"
+          :disabled="crud.isShowDetail"
         /> %
       </el-form-item>
       <el-form-item
@@ -155,6 +161,7 @@
           type="number"
           :min="0"
           :max="100"
+          :disabled="crud.isShowDetail"
         /> %
       </el-form-item>
       <el-form-item
@@ -169,6 +176,7 @@
           :precision="2"
           :min="0"
           :max="100"
+          :disabled="crud.isShowDetail"
         /> %
       </el-form-item>
       <el-form-item
@@ -180,6 +188,7 @@
           controls-position="right"
           placeholder="请输入产品质量投票得分"
           type="number"
+          :disabled="crud.isShowDetail"
         />
 <!--        <el-upload
           action="https://jsonplaceholder.typicode.com/posts/"
@@ -216,7 +225,9 @@
         :loading="crud.status.cu === 2"
         type="primary"
         @click="crud.submitCU"
+        v-if="!crud.isShowDetail"
       >
+
         确认
       </el-button>
     </div>
@@ -381,7 +392,7 @@ export default {
     }
   },
   mounted() {
-    // console.log(this.form)
+    // console.log(this.crud.status)
   },
   methods: {
 
