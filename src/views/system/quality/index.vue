@@ -14,23 +14,8 @@
               @sort-change="onSortChange"
     >
       <el-table-column type="selection" width="55" />
-<!--      <el-table-column prop="productSort" label="id">
-        <template slot-scope="scope">
-          {{ scope.row.id }}
-        </template>
-      </el-table-column>-->
       <el-table-column prop="pqProduct.productName" label="产品名称" sortable="custom"/>
       <el-table-column prop="dept.name" label="团队" sortable="custom"/>
-<!--      <el-table-column prop="enabled" label="状态" align="center">
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.enabled"
-            active-color="#409EFF"
-            inactive-color="#F56C6C"
-            @change="changeEnabled(scope.row, scope.row.enabled)"
-          />
-        </template>
-      </el-table-column>-->
       <el-table-column prop="productQualityComprehensiveScore" label="产品质量综合得分" sortable="custom"/>
       <el-table-column prop="voteScore" label="产品质量投票得分" sortable="custom"/>
       <el-table-column prop="productQualityFinalScore" label="产品质量最终得分" sortable="custom"/>
@@ -64,10 +49,11 @@
 import getAllQuality from '@/api/system/quality'
 import eHeader from './module/header'
 import eForm from './module/form'
-import CRUD, { presenter, crud } from '@crud/crud'
+import CRUD, { presenter } from '@crud/crud'
 import crudOperation from '@crud/CRUD.operation'
 import pagination from '@crud/Pagination'
 import udOperation from '@crud/UD.operation'
+let defaultQualitySort = "createTime,desc"
 export default {
   name: 'quality',
   components: { eHeader, eForm, crudOperation, pagination, udOperation },
@@ -75,7 +61,7 @@ export default {
     return CRUD({
       title: '产品质量',
       url: 'api/pqQuality',
-      sort: ['createTime,desc'],
+      sort: [defaultQualitySort],
       crudMethod: { ...getAllQuality },
       optShow: {
         add: false,
@@ -119,7 +105,10 @@ export default {
       })
     },
     onSortChange({ prop, order }) {
-      let sortItem = prop+","+(order==="ascending"?"asc":"desc")
+      let sortItem=defaultQualitySort;
+      if(order){
+        sortItem = prop+","+(order==="ascending"?"asc":"desc")
+      }
       this.crud.sort=[sortItem]
       this.crud.toQuery()
     },

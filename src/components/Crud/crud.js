@@ -169,8 +169,6 @@ function CRUD(options) {
      * @param {*} data 数据项
      */
     toEdit(data) {
-      console.log(1)
-      console.log(JSON.stringify(data))
       crud.resetForm(JSON.parse(JSON.stringify(data)))
       if (!(callVmHook(crud, CRUD.HOOK.beforeToEdit, crud.form) && callVmHook(crud, CRUD.HOOK.beforeToCU, crud.form))) {
         return
