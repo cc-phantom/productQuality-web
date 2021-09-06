@@ -23,7 +23,7 @@
       <el-table-column prop="updateTime" label="修改日期" sortable="custom"/>
       <!--   编辑与删除   -->
       <el-table-column
-        v-if="checkPer(['admin','qpQuality:edit','qpQuality:del'])"
+        v-if="checkPer(['admin','pqQuality:get','pqQuality:edit','pqQuality:del'])"
         label="操作"
         width="130px"
         align="center"
