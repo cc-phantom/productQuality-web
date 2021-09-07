@@ -1,4 +1,5 @@
 const getters = {
+  productExcelUploadApi: state => state.api.productExcelUploadApi,
   deployUploadApi: state => state.api.deployUploadApi,
   databaseUploadApi: state => state.api.databaseUploadApi,
   size: state => state.app.size,

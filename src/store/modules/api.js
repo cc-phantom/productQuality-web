@@ -21,7 +21,9 @@ const api = {
     // 文件上传
     fileUploadApi: baseUrl + '/api/localStorage',
     // baseUrl，
-    baseApi: baseUrl
+    baseApi: baseUrl,
+    // 产品excel上传
+    productExcelUploadApi : baseUrl + '/api/pqProduct/import'
   }
 }
 

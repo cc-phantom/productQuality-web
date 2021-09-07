@@ -13,6 +13,19 @@
         </el-select>-->
         <rrOperation :crud="crud" />
       </div>
+
+      <el-upload
+        v-permission="permission.add"
+        :action="productExcelUploadApi"
+        class="upload-demo"
+        drag
+      >
+        <i class="el-icon-upload" />
+        <div class="el-upload__text">
+          拖入产品列表Excel，或
+          <em>点击上传</em>
+        </div>
+      </el-upload>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
       <crudOperation :permission="permission" />
       <!--表单组件-->
@@ -89,15 +102,20 @@ import pagination from '@crud/Pagination';
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import {LOAD_CHILDREN_OPTIONS} from "@riophae/vue-treeselect";
+import {mapGetters} from "vuex";
+
 const defaultForm = { productName: null, enabled: 1, dept: { id: null} }
 // const defaultForm = { id: null, username: null, nickName: null, gender: '男', email: null, enabled: 'false', roles: [], jobs: [], dept: { id: null }, phone: null }
 export default {
   name: 'PqProduct',
-  components: { Treeselect, pagination, crudOperation, rrOperation, udOperation },
+  components: {Treeselect, pagination, crudOperation, rrOperation, udOperation },
   mixins: [presenter(), header(), form(defaultForm), crud()],
   dicts: ['product_status'],
   cruds() {
     return CRUD({ title: '产品', url: 'api/pqProduct', idField: 'id', sort: 'id,desc', crudMethod: { ...crudProduct }})
+  },
+  computed: {
+    ...mapGetters(['productExcelUploadApi'])
   },
   data() {
     return {
