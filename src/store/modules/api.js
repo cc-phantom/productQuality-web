@@ -2,6 +2,8 @@
 const baseUrl = process.env.VUE_APP_BASE_API === '/' ? '' : process.env.VUE_APP_BASE_API
 const api = {
   state: {
+     // 产品excel上传
+     productExcelUploadApi : baseUrl + '/api/pqProduct/import',
     // 部署包上传
     deployUploadApi: baseUrl + '/api/deploy/upload',
     // SQL脚本上传
@@ -21,9 +23,7 @@ const api = {
     // 文件上传
     fileUploadApi: baseUrl + '/api/localStorage',
     // baseUrl，
-    baseApi: baseUrl,
-    // 产品excel上传
-    productExcelUploadApi : baseUrl + '/api/pqProduct/import'
+    baseApi: baseUrl
   }
 }
 

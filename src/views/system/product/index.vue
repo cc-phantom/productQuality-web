@@ -14,20 +14,45 @@
         <rrOperation :crud="crud" />
       </div>
 
-      <el-upload
-        v-permission="permission.add"
-        :action="productExcelUploadApi"
-        class="upload-demo"
-        drag
-      >
-        <i class="el-icon-upload" />
-        <div class="el-upload__text">
-          拖入产品列表Excel，或
-          <em>点击上传</em>
+<!--      <el-upload-->
+<!--        v-permission="permission.add"-->
+<!--        :action="productExcelUploadApi"-->
+<!--        class="upload-demo"-->
+<!--        drag-->
+<!--      >-->
+<!--        <i class="el-icon-upload" />-->
+<!--        <div class="el-upload__text">-->
+<!--          拖入产品列表Excel，或-->
+<!--          <em>点击上传</em>-->
+<!--        </div>-->
+<!--      </el-upload>-->
+
+      <!-- 文件上传 -->
+      <el-dialog :visible.sync="dialog" :close-on-click-modal="false" append-to-body width="500px" @close="doSubmit">
+        <el-upload
+          :before-remove="handleBeforeRemove"
+          :on-success="handleSuccess"
+          :on-error="handleError"
+          :file-list="fileList"
+          :headers="headers"
+          :action="productExcelUploadApi"
+          class="upload-demo"
+          multiple
+        >
+          <el-button size="small" type="primary">点击上传</el-button>
+          <div slot="tip" style="display: block;" class="el-upload__tip">请勿上传违法文件，且文件不超过15M</div>
+        </el-upload>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="doSubmit">确认</el-button>
         </div>
-      </el-upload>
+      </el-dialog>
       <!--如果想在工具栏加入更多按钮，可以使用插槽方式， slot = 'left' or 'right'-->
-      <crudOperation :permission="permission" />
+      <crudOperation :permission="permission">
+        <template slot="left">
+          <!-- 上传 -->
+          <el-button class="filter-item" size="mini" type="primary" icon="el-icon-upload" @click="dialog = true">上传</el-button>
+        </template>
+      </crudOperation>
       <!--表单组件-->
       <el-dialog :close-on-click-modal="false" :before-close="crud.cancelCU" :visible.sync="crud.status.cu > 0" :title="crud.status.title" width="500px">
         <el-form ref="form" :model="form" :rules="rules" size="small" label-width="80px">
@@ -103,6 +128,8 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import {LOAD_CHILDREN_OPTIONS} from "@riophae/vue-treeselect";
 import {mapGetters} from "vuex";
+import crudQiNiu from "@/api/tools/qiniu";
+import {getToken} from "@/utils/auth";
 
 const defaultForm = { productName: null, enabled: 1, dept: { id: null} }
 // const defaultForm = { id: null, username: null, nickName: null, gender: '男', email: null, enabled: 'false', roles: [], jobs: [], dept: { id: null }, phone: null }
@@ -141,7 +168,12 @@ export default {
         { key: 'deptId', display_name: '组织id' },
         { key: 'productName', display_name: '产品名称' },
         { key: 'enabled', display_name: '是否启用：0 不启用；1 启用' }
-      ]
+      ],
+      url: '', headers: { 'Authorization': getToken() },
+      title: '文件',
+      dialog: false,
+      dialogVisible: false,
+      fileList: [], files: [],
     }
   },
   methods: {
@@ -238,7 +270,42 @@ export default {
         this.query.deptId = data.id
       }
       this.crud.toQuery()
-    }
+    },
+    doConfig() {
+      const _this = this.$refs.form
+      _this.init()
+      _this.dialog = true
+    },
+    handleSuccess(response, file, fileList) {
+      const uid = file.uid
+      const id = response.id
+      this.files.push({ uid, id })
+    },
+    handleBeforeRemove(file, fileList) {
+      for (let i = 0; i < this.files.length; i++) {
+        if (this.files[i].uid === file.uid) {
+          crudQiNiu.del([this.files[i].id]).then(res => {})
+          return true
+        }
+      }
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
+    },
+    // 刷新列表数据
+    doSubmit() {
+      this.fileList = []
+      this.dialogVisible = false
+      this.dialogImageUrl = ''
+      this.dialog = false
+      this.crud.toQuery()
+    },
+    // 监听上传失败
+    handleError(e, file, fileList) {
+      const msg = JSON.parse(e.message)
+      this.crud.notify(msg.message, CRUD.NOTIFICATION_TYPE.ERROR)
+    },
   }
 }
 </script>
